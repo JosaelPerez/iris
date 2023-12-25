@@ -1,0 +1,22 @@
+[tool.poetry]
+name = "blackcore-iris-api"
+version = "0.1.0"
+description = "Blackcore Iris API is an API that provides image processing and computer vision services"
+authors = ["JosaelPrz <josael.prz@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+fastapi = "^0.105.0"
+uvicorn = "^0.24.0.post1"
+httpx = "^0.25.2"
+opencv-contrib-python-headless = "^4.8.1.78"
+
+[tool.poetry.group.dev.dependencies]
+jupyter = "^1.0.0"
+pillow = "^10.1.0"
+pytest = "^7.4.3"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
