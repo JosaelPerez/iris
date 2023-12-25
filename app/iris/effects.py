@@ -7,40 +7,41 @@ class CroppingConfiguration(BaseModel):
     orientation : Orientation
     aspect_ratio: AspectRatio
 
-def _crop(image, origin: Coordinate, dimensions: Dimension):
-    
-    # Set minimum crop size
-    min_crop_size = 16
-
-    # Check if crop dimensions are large enough
-    if dimensions.width < min_crop_size or dimensions.height < min_crop_size:
-        raise ValueError(f"Crop dimensions {str(dimensions.width)} x {str(dimensions.height)} are too small: Use a crop size of {min_crop_size} pixels or larger.")
-
-    # Calculate crop origins
-    crop_x1 = origin.x
-    crop_x2 = crop_x1 + dimensions.width - 1
-    crop_y1 = origin.y
-    crop_y2 = crop_y1 + dimensions.height - 1
-
-    # Get image dimensions
-    image_height, image_width, _ = image.shape
-
-    # Check if crop origins are within image dimensions
-    if crop_x1 > image_width - 1 or crop_y1 > image_height - 1:
-        raise ValueError(f"Crop origin ({crop_x1},{crop_y1} is outside the image dimensions.")
-    
-    if crop_x2 > image_width - 1 or crop_y2 > image_height - 1:
-        raise ValueError(f"Crop end ({crop_x2},{crop_y2} is outside the image dimensions.")
-    
-    # Crop image
-    cropped_image = image[crop_y1:crop_y2, crop_x1:crop_x2]
-    
-    return cropped_image
-
 class EffectsFactory:
 
     @staticmethod
-    def create_cropping_function(configuration):
+    def create_cropping_function(configuration: CroppingConfiguration):
+
+        def crop(image, origin: Coordinate, dimensions: Dimension):
+    
+            # Set minimum crop size
+            min_crop_size = 16
+
+            # Check if crop dimensions are large enough
+            if dimensions.width < min_crop_size or dimensions.height < min_crop_size:
+                raise ValueError(f"Crop dimensions {str(dimensions.width)} x {str(dimensions.height)} are too small: Use a crop size of {min_crop_size} pixels or larger.")
+
+            # Calculate crop origins
+            crop_x1 = origin.x
+            crop_x2 = crop_x1 + dimensions.width - 1
+            crop_y1 = origin.y
+            crop_y2 = crop_y1 + dimensions.height - 1
+
+            # Get image dimensions
+            image_height, image_width, _ = image.shape
+
+            # Check if crop origins are within image dimensions
+            if crop_x1 > image_width - 1 or crop_y1 > image_height - 1:
+                raise ValueError(f"Crop origin ({crop_x1},{crop_y1} is outside the image dimensions.")
+            
+            if crop_x2 > image_width - 1 or crop_y2 > image_height - 1:
+                raise ValueError(f"Crop end ({crop_x2},{crop_y2} is outside the image dimensions.")
+            
+            # Crop image
+            cropped_image = image[crop_y1:crop_y2, crop_x1:crop_x2]
+            
+            return cropped_image
+
         aspect_ratio = configuration.aspect_ratio
         orientation = configuration.orientation
 
@@ -89,6 +90,6 @@ class EffectsFactory:
             raise ValueError("Calculated crop height is invalid.")
 
         # Create a lambda function to perform the cropping operation based on the calculated crop height
-        cropping_function = lambda image, origin, dimensions: _crop(image, origin, Dimension(width=dimensions.width, height=crop_height))
+        cropping_function = lambda image, origin, dimensions: crop(image, origin, Dimension(width=dimensions.width, height=crop_height))
 
         return cropping_function
