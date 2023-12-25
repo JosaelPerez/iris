@@ -27,3 +27,57 @@ def crop(image, start_x, start_y, crop_width, crop_height):
     cropped_image = image[crop_y1:crop_y2, crop_x1:crop_x2]
     
     return cropped_image
+
+def crop_square(image, start_x, start_y, crop_size):
+    cropped_image = crop(image, start_x, start_y, crop_size, crop_size)
+    return cropped_image
+
+def crop_3_2_landscape(image, start_x, start_y, crop_width):
+    # Calculate corresponding height for 3:2 ratio
+    crop_height = int(crop_width * 2 / 3)
+    return crop(image, start_x, start_y, crop_width, crop_height)
+
+def crop_3_2_portrait(image, start_x, start_y, crop_width):
+    # Calculate corresponding height for 3:2 ratio
+    crop_height = int(crop_width * 3 / 2)
+    return crop(image, start_x, start_y, crop_width, crop_height)
+
+def crop_4_3_landscape(image, start_x, start_y, crop_width):
+    # Calculate corresponding height for 4:3 ratio
+    crop_height = int(crop_width * 3 / 4)
+    return crop(image, start_x, start_y, crop_width, crop_height)
+
+def crop_4_3_portrait(image, start_x, start_y, crop_width):
+    # Calculate corresponding height for 4:3 ratio
+    crop_height = int(crop_width * 4 / 3)
+    return crop(image, start_x, start_y, crop_width, crop_height)
+
+def crop_5_4_landscape(image, start_x, start_y, crop_width):
+    # Calculate corresponding height for 5:4 ratio
+    crop_height = int(crop_width * 4 / 5)
+    return crop(image, start_x, start_y, crop_width, crop_height)
+
+def crop_5_4_portrait(image, start_x, start_y, crop_width):
+    # Calculate corresponding height for 5:4 ratio
+    crop_height = int(crop_width * 5 / 4)
+    return crop(image, start_x, start_y, crop_width, crop_height)
+
+def crop_16_9_landscape(image, start_x, start_y, crop_width):
+    # Calculate corresponding height for 16:9 ratio
+    crop_height = int(crop_width * 9 / 16)
+    return crop(image, start_x, start_y, crop_width, crop_height)
+
+def crop_16_9_portrait(image, start_x, start_y, crop_width):
+    # Calculate corresponding height for 16:9 ratio
+    crop_height = int(crop_width * 16 / 9)
+    return crop(image, start_x, start_y, crop_width, crop_height)
+
+def crop_16_10_landscape(image, start_x, start_y, crop_width):
+    # Calculate corresponding height for 16:10 ratio
+    crop_height = int(crop_width * 10 / 16)
+    return crop(image, start_x, start_y, crop_width, crop_height)
+
+def crop_16_10_portrait(image, start_x, start_y, crop_width):
+    # Calculate corresponding height for 16:10 ratio
+    crop_height = int(crop_width * 16 / 10)
+    return crop(image, start_x, start_y, crop_width, crop_height)
