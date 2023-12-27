@@ -13,6 +13,7 @@ def test_pass_valid_point(x: int, y: int):
     assert point.x == x
     assert point.y == y
 
+
 @pytest.mark.parametrize("width, height", [
     (100, 100),
     (0, 0),
@@ -30,18 +31,12 @@ def test_pass_default_height_dimension():
     assert dimension.height == 0
 
 
-def test_pass_positive_origin():
-    origin = Point(x=100, y=100)
-    dimensions = Dimension(width=100, height=100)
-    aspect_ratio = AspectRatio.FREE
-
-    configuration = CroppingConfiguration(
-        origin=origin, dimensions=dimensions, aspect_ratio=aspect_ratio)
-    assert configuration.origin == origin
-
-
-def test_pass_zero_origin():
-    origin = Point(x=0, y=0)
+@pytest.mark.parametrize("x, y", [
+    (100, 100),
+    (0, 0)
+], ids=["positive", "zero"])
+def test_pass_cropping_configuration_origin(x: int, y: int):
+    origin = Point(x=x, y=y)
     dimensions = Dimension(width=100, height=100)
     aspect_ratio = AspectRatio.FREE
 
