@@ -13,23 +13,15 @@ def test_pass_valid_point(x: int, y: int):
     assert point.x == x
     assert point.y == y
 
-
-def test_pass_positive_dimension():
-    dimension = Dimension(width=100, height=100)
-    assert dimension.width == 100
-    assert dimension.height == 100
-
-
-def test_pass_zero_dimension():
-    dimension = Dimension(width=0, height=0)
-    assert dimension.width == 0
-    assert dimension.height == 0
-
-
-def test_pass_negative_dimension():
-    dimension = Dimension(width=-1, height=-1)
-    assert dimension.width == -1
-    assert dimension.height == -1
+@pytest.mark.parametrize("width, height", [
+    (100, 100),
+    (0, 0),
+    (-1, -1)
+], ids=["positive", "zero", "negative"])
+def test_pass_valid_dimension(width: int, height: int):
+    dimension = Dimension(width=width, height=height)
+    assert dimension.width == width
+    assert dimension.height == height
 
 
 def test_pass_default_height_dimension():
