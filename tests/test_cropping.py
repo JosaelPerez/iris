@@ -7,6 +7,10 @@ def test_pass_positive_point():
     assert point.x == 100
     assert point.y == 100
 
+def test_pass_zero_point():
+    point = Point(x=0, y=0)
+    assert point.x == 0
+    assert point.y == 0
 def test_pass_positive_origin():
     origin = Point(x=100, y=100)
     dimensions = Dimension(width=100, height=100)
