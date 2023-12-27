@@ -69,3 +69,10 @@ def test_fail_free_cropping_configuration_to_small_dimensions():
     with pytest.raises(ValueError):
         CroppingConfiguration(origin=origin, dimensions=dimensions, aspect_ratio=aspect_ratio)
 
+def test_fail_free_cropping_configuration_with_zero_dimensions():
+    origin = Point(x=0, y=0)
+    dimensions = Dimension(width=0, height=0)
+    aspect_ratio = AspectRatio.FREE
+
+    with pytest.raises(ValueError):
+        CroppingConfiguration(origin=origin, dimensions=dimensions, aspect_ratio=aspect_ratio)
