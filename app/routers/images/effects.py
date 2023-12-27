@@ -1,15 +1,15 @@
-from fastapi import APIRouter, UploadFile
-from app.iris.effects import EffectsFactory, CroppingConfiguration
-
-router = APIRouter(prefix="/images/effects", tags=["effects"] )
+from fastapi import APIRouter, UploadFile, HTTPException, Depends, status
+from fastapi.responses import Response
+from app.iris import effects
+router = APIRouter(prefix="/images/effects", tags=["effects"])
 
 @router.post("/crop")
-async def crop(image_file: UploadFile, configuration: CroppingConfiguration):
+async def crop(image_file: UploadFile, configuration: effects.CroppingConfiguration = Depends(effects.get_cropping_configuration)):
     # Read uploaded image file
-    image = await image_file.read()
+    image_bytes = await image_file.read()
 
-    cropping_function = EffectsFactory.create_cropping_function(configuration)
-    cropping_function(image, configuration.origin, configuration.dimensions)
-
-    # Return a success message or the cropped image data
-    return {"data": "Image cropped successfully with the provided configuration"}
+    try:
+        cropped_image_bytes = effects.crop(image_bytes, configuration=configuration)
+        return Response(content=cropped_image_bytes, media_type="image/jpeg", status_code=200)
+    except ValueError as e:
+        return HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
