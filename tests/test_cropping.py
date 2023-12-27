@@ -2,6 +2,10 @@ from app.iris.effects import CroppingConfiguration
 from app.iris.utils import Point, Dimension, AspectRatio
 import pytest
 
+def test_pass_positive_point():
+    point = Point(x=100, y=100)
+    assert point.x == 100
+    assert point.y == 100
 
 def test_pass_positive_origin():
     origin = Point(x=100, y=100)
