@@ -5,8 +5,7 @@ from app.iris.utils import Point, Dimension, Orientation, AspectRatio
 from fastapi import Form, HTTPException, status
 
 # Set minimum crop size
-_minimun_crop_size = 16
-
+minimun_cropping_size = 16
 
 def get_cropping_configuration(
     origin_x: int = Form(...),
@@ -57,15 +56,15 @@ class CroppingConfiguration(BaseModel):
             if not self.dimensions.width or not self.dimensions.height:
                 raise ValueError(f"Free cropping requires both width and height dimensions.")
 
-            if self.dimensions.width < _minimun_crop_size or self.dimensions.height < _minimun_crop_size:
-                raise ValueError(f"Dimensions = {self.dimensions.width}x{self.dimensions.height} must be greater or equal to {_minimun_crop_size}x{_minimun_crop_size} pixels.")
+            if self.dimensions.width < minimun_cropping_size or self.dimensions.height < minimun_cropping_size:
+                raise ValueError(f"Dimensions = {self.dimensions.width}x{self.dimensions.height} must be greater or equal to {minimun_cropping_size}x{minimun_cropping_size} pixels.")
 
         else:
             if self.dimensions.height:
                 raise ValueError(f"Default aspect ratio '{self.aspect_ratio.value}' cannot be used with a custom height.")
 
-            if self.dimensions.width < _minimun_crop_size:
-                raise ValueError(f"Width dimension = '{self.dimensions.width}' must be greater or equal to {_minimun_crop_size} pixels.")
+            if self.dimensions.width < minimun_cropping_size:
+                raise ValueError(f"Width dimension = '{self.dimensions.width}' must be greater or equal to {minimun_cropping_size} pixels.")
 
             if self.aspect_ratio == AspectRatio.SQUARE:
                 if self.orientation is not None:
@@ -122,8 +121,8 @@ class CroppingConfiguration(BaseModel):
                     case _:
                         raise ValueError(f"Aspect ratio '{self.aspect_ratio.value}' with orientation '{self.orientation}' is not supported.")
 
-                if self.dimensions.height < _minimun_crop_size:
-                    raise ValueError(f"Height dimension = '{self.dimensions.height}' must be greater or equal to {_minimun_crop_size} pixels.")
+                if self.dimensions.height < minimun_cropping_size:
+                    raise ValueError(f"Height dimension = '{self.dimensions.height}' must be greater or equal to {minimun_cropping_size} pixels.")
 
         return self
 
