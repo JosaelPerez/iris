@@ -3,22 +3,15 @@ from app.iris.utils import Point, Dimension, AspectRatio
 import pytest
 
 
-def test_pass_positive_point():
-    point = Point(x=100, y=100)
-    assert point.x == 100
-    assert point.y == 100
-
-
-def test_pass_zero_point():
-    point = Point(x=0, y=0)
-    assert point.x == 0
-    assert point.y == 0
-
-
-def test_pass_negative_point():
-    point = Point(x=-1, y=-1)
-    assert point.x == -1
-    assert point.y == -1
+@pytest.mark.parametrize("x, y", [
+    (100, 100),
+    (0, 0),
+    (-1, -1)
+], ids=["positive", "zero", "negative"])
+def test_pass_valid_point(x: int, y: int):
+    point = Point(x=x, y=y)
+    assert point.x == x
+    assert point.y == y
 
 
 def test_pass_positive_dimension():
