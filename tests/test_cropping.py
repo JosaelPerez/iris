@@ -27,6 +27,11 @@ def test_pass_zero_dimension():
     assert dimension.width == 0
     assert dimension.height == 0
 
+def test_pass_negative_dimension():
+    dimension = Dimension(width=-1, height=-1)
+    assert dimension.width == -1
+    assert dimension.height == -1
+
 def test_pass_positive_origin():
     origin = Point(x=100, y=100)
     dimensions = Dimension(width=100, height=100)
