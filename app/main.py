@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from app.routers.images import effects
+from app.routers import effects
 import uvicorn
 
 app = FastAPI()
