@@ -1,7 +1,7 @@
 from fastapi import APIRouter, UploadFile, HTTPException, Depends, status
 from fastapi.responses import Response
 from app.iris import effects
-router = APIRouter(prefix="/images/effects", tags=["effects"])
+router = APIRouter(prefix="/effects", tags=["effects"])
 
 @router.post("/crop")
 async def crop(image_file: UploadFile, configuration: effects.CroppingConfiguration = Depends(effects.get_cropping_configuration)):
