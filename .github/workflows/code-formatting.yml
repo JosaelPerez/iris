@@ -1,0 +1,17 @@
+name: Code formatting
+
+on:
+  push:
+    branches:
+      - main
+
+  pull_request: 
+    branches:
+      - main
+
+jobs:
+  python-code-formatting:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: psf/black@stable
