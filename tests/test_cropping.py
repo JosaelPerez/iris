@@ -2,7 +2,7 @@ from fastapi.testclient import TestClient
 import pytest
 from app.effects.cropping import CroppingConfiguration
 from app.effects.utils import Point, Dimension, AspectRatio, Orientation
-from app.main import app
+from main import app
 
 
 client = TestClient(app)
@@ -161,3 +161,69 @@ def test_pass_http_crop(
     )
 
     assert response.status_code == 200
+
+
+@pytest.mark.parametrize(
+    "origin_x, origin_y, width, height, aspect_ratio, orientation",
+    [
+        (100000, 100000, 100, 100, AspectRatio.FREE.value, None),
+        (0, 0, 100000, 100000, AspectRatio.FREE.value, None),
+        (0, 0, 10, 10, AspectRatio.FREE.value, None),
+        (0, 0, 100, 100, AspectRatio.FREE.value, Orientation.PORTRAIT.value),
+        (0, 0, 100, 100, AspectRatio.SQUARE.value, None),
+        (0, 0, 100, None, AspectRatio.SQUARE.value, Orientation.LANDSCAPE.value),
+        (0, 0, 100, 100, AspectRatio.THREE_TWO.value, Orientation.PORTRAIT.value),
+        (0, 0, 200, 100, AspectRatio.FOUR_THREE.value, Orientation.LANDSCAPE.value),
+        (0, 0, 100, 100, AspectRatio.FIVE_FOUR.value, Orientation.PORTRAIT.value),
+        (0, 0, 200, 100, AspectRatio.SIXTEEN_NINE.value, Orientation.LANDSCAPE.value),
+        (0, 0, 100, 100, AspectRatio.SIXTEEN_TEN.value, Orientation.PORTRAIT.value),
+        (0, 0, 100, None, AspectRatio.THREE_TWO.value, None),
+        (0, 0, 200, None, AspectRatio.FOUR_THREE.value, None),
+        (0, 0, 100, None, AspectRatio.FIVE_FOUR.value, None),
+        (0, 0, 200, None, AspectRatio.SIXTEEN_NINE.value, None),
+        (0, 0, 100, None, AspectRatio.SIXTEEN_TEN.value, None),
+    ],
+    ids=[
+        "out_of_bounds_origin",
+        "out_of_bounds_dimensions",
+        "too_small_dimensions",
+        "free_cropping_with_orientation",
+        "square_cropping_with_height",
+        "square_cropping_with_orientation",
+        "three_two_cropping_with_height",
+        "four_three_cropping_with_height",
+        "five_four_cropping_with_height",
+        "sixteen_nine_cropping_with_height",
+        "sixteen_ten_cropping_with_height",
+        "three_two_cropping_without_orientation",
+        "four_three_cropping_without_orientation",
+        "five_four_cropping_without_orientation",
+        "sixteen_nine_cropping_without_orientation",
+        "sixteen_ten_cropping_without_orientation",
+    ],
+)
+def test_fail_http_crop(
+    image: bytes,
+    origin_x: int,
+    origin_y: int,
+    width: int,
+    height: int | None,
+    aspect_ratio: str | None,
+    orientation: str | None,
+):
+    data = {
+        "origin_x": origin_x,
+        "origin_y": origin_y,
+        "width": width,
+        "height": height,
+        "aspect_ratio": aspect_ratio,
+        "orientation": orientation,
+    }
+
+    response = client.post(
+        url="/effects/crop",
+        data=data,
+        files={"image_file": ("image_bytes.jpg", image, "image/jpeg")},
+    )
+
+    assert response.status_code == 400
