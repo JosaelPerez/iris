@@ -39,6 +39,11 @@ class CroppingConfiguration(BaseModel):
                     f"Dimensions = {self.dimensions.width}x{self.dimensions.height} must be greater or equal to {minimun_cropping_size}x{minimun_cropping_size} pixels."
                 )
 
+            if self.orientation is not None:
+                raise ValueError(
+                    f"Free aspect ratio '{self.aspect_ratio.value}' cannot be used with an orientation."
+                )
+
         else:
             if self.dimensions.height:
                 raise ValueError(
