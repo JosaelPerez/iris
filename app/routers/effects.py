@@ -21,4 +21,4 @@ async def crop(
             content=cropped_image_bytes, media_type="image/jpeg", status_code=200
         )
     except ValueError as e:
-        return HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
