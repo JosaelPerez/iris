@@ -1,6 +1,11 @@
-from app.effects.cropping import CroppingConfiguration
-from app.effects.utils import Point, Dimension, AspectRatio
+from fastapi.testclient import TestClient
 import pytest
+from app.effects.cropping import CroppingConfiguration
+from app.effects.utils import Point, Dimension, AspectRatio, Orientation
+from app.main import app
+
+
+client = TestClient(app)
 
 
 @pytest.mark.parametrize(
@@ -93,3 +98,66 @@ def test_fail_default_cropping_configuration_with_height(aspect_ratio: AspectRat
         CroppingConfiguration(
             origin=origin, dimensions=dimensions, aspect_ratio=aspect_ratio
         )
+
+
+@pytest.fixture
+def image():
+    return open("tests/images/forest.jpg", "rb").read()
+
+
+@pytest.mark.parametrize(
+    "origin_x, origin_y, width, height, aspect_ratio, orientation",
+    [
+        (0, 0, 100, 100, AspectRatio.FREE.value, None),
+        (0, 0, 100, None, AspectRatio.SQUARE.value, None),
+        (0, 0, 100, None, AspectRatio.THREE_TWO.value, Orientation.PORTRAIT.value),
+        (0, 0, 200, None, AspectRatio.THREE_TWO.value, Orientation.LANDSCAPE.value),
+        (0, 0, 100, None, AspectRatio.FOUR_THREE.value, Orientation.PORTRAIT.value),
+        (0, 0, 200, None, AspectRatio.FOUR_THREE.value, Orientation.LANDSCAPE.value),
+        (0, 0, 100, None, AspectRatio.FIVE_FOUR.value, Orientation.PORTRAIT.value),
+        (0, 0, 200, None, AspectRatio.FIVE_FOUR.value, Orientation.LANDSCAPE.value),
+        (0, 0, 100, None, AspectRatio.SIXTEEN_NINE.value, Orientation.PORTRAIT.value),
+        (0, 0, 200, None, AspectRatio.SIXTEEN_NINE.value, Orientation.LANDSCAPE.value),
+        (0, 0, 100, None, AspectRatio.SIXTEEN_TEN.value, Orientation.PORTRAIT.value),
+        (0, 0, 200, None, AspectRatio.SIXTEEN_TEN.value, Orientation.LANDSCAPE.value),
+    ],
+    ids=[
+        "free_cropping",
+        "square_cropping",
+        "three_two_portrait_cropping",
+        "three_two_landscape_cropping",
+        "four_three_portrait_cropping",
+        "four_three_landscape_cropping",
+        "five_four_portrait_cropping",
+        "five_four_landscape_cropping",
+        "sixteen_nine_portrait_cropping",
+        "sixteen_nine_landscape_cropping",
+        "sixteen_ten_portrait_cropping",
+        "sixteen_ten_landscape_cropping",
+    ],
+)
+def test_pass_http_crop(
+    image: bytes,
+    origin_x: int,
+    origin_y: int,
+    width: int,
+    height: int | None,
+    aspect_ratio: str | None,
+    orientation: str | None,
+):
+    data = {
+        "origin_x": origin_x,
+        "origin_y": origin_y,
+        "width": width,
+        "height": height,
+        "aspect_ratio": aspect_ratio,
+        "orientation": orientation,
+    }
+
+    response = client.post(
+        url="/effects/crop",
+        data=data,
+        files={"image_file": ("image_bytes.jpg", image, "image/jpeg")},
+    )
+
+    assert response.status_code == 200
